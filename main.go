@@ -16,8 +16,8 @@ import (
 	"os"
 	"net"
 	"net/url"
-	util "github.build.ge.com/212359746/ecutil"
-	plugin "github.build.ge.com/212359746/ecplugin"
+	util "github.build.ge.com/212359746/wzutil"
+	plugin "github.build.ge.com/212359746/wzplugin"
 )
 
 var ()
