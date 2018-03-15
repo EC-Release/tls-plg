@@ -13,11 +13,16 @@
 package main
 
 import (
-	"os"
+	//"os"
+	"flag"
+
 	"net"
 	"net/url"
 	util "github.build.ge.com/212359746/wzutil"
 	plugin "github.build.ge.com/212359746/wzplugin"
+	"gopkg.in/yaml.v2"
+	"encoding/base64"
+
 )
 
 var ()
@@ -27,43 +32,62 @@ const (
 	REV = "v1"
 
 )
+
+func GetTLSSetting()(map[string]interface{}, error){
+	plg:=flag.String("plg","","Enable support for EC TLS Plugin.")
+	flag.Parse()
+	util.InfoLog(*plg)
+
+	f, err := base64.StdEncoding.DecodeString(*plg)
+	if err!=nil{
+		util.InfoLog(err)
+	}
+	t:=make(map[string]interface{})
+	err=yaml.Unmarshal(f, &t)
+	if err!=nil{
+		return nil,err
+	}
+
+	return t,nil
+
+}
+
 func main(){
+
 	defer func(){
 		if r:=recover();r!=nil{
-			util.ErrLog(r)
-			os.Exit(1)
+			util.InfoLog("r")
+			util.PanicRecovery(r)
+		} else {
+			util.InfoLog("plugin undeployed.")
 		}
 	}()
 
 	util.Init("TLS Plugin",true)
 
-	p:=plugin.NewPlugin()
-	util.DbgLog(p.Content)
-
-	op:=p.Content
-
-	op1:=op[YML_TLS_FLAG].([]interface{})
-	op2:=op1[0].(map[interface{}]interface{})
-	if op2["status"].(string)=="active"{
-		
-		_, err := net.ResolveTCPAddr("tcp",op2["hostname"].(string)+":"+op2["tlsport"].(string))
-		if err != nil {
-			panic(err)
-		}
-
-		p:=plugin.NewProxy(REV)
-
-		u, err := url.Parse(op2["proxy"].(string))
-		if err != nil {
-			panic(err)
-		}
-
-		if err:=p.Init(op2["schema"].(string)+"://"+op2["hostname"].(string)+":"+op2["tlsport"].(string),u);err!=nil{
-			panic(err)
-		}
-
-		p.Start(op2["port"].(string))
+	t,err:=GetTLSSetting()
+	if err!=nil{
+		panic(err)
 	}
-	
+	util.InfoLog(t)
+		
+	_, err= net.ResolveTCPAddr("tcp",t["hostname"].(string)+":"+t["tlsport"].(string))
+	if err != nil {
+		panic(err)
+	}
 
+	p:=plugin.NewProxy(REV)
+
+	u, err := url.Parse(t["proxy"].(string))
+	if err != nil {
+		panic(err)
+	}
+
+	if err:=p.Init(t["schema"].(string)+"://"+t["hostname"].(string)+":"+t["tlsport"].(string),u);err!=nil{
+		panic(err)
+	}
+
+	p.Start(t["port"].(string))
+	
+	
 }
