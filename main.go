@@ -33,44 +33,49 @@ const (
 
 )
 
-func GetTLSSetting()(map[string]interface{}, error){
+func GetTLSSetting()(map[string]interface {}, error){
+	
 	plg:=flag.String("plg","","Enable support for EC TLS Plugin.")
 	flag.Parse()
 	util.InfoLog(*plg)
-
+	
 	f, err := base64.StdEncoding.DecodeString(*plg)
 	if err!=nil{
-		util.InfoLog(err)
+		return nil, err
 	}
 	t:=make(map[string]interface{})
+	
 	err=yaml.Unmarshal(f, &t)
 	if err!=nil{
 		return nil,err
 	}
-
+	
+	//s:=t[""].(map[interface{}]interface{})
 	return t,nil
 
+}
+
+func init(){
+	util.Init("TLS Plugin",true)
 }
 
 func main(){
 
 	defer func(){
 		if r:=recover();r!=nil{
-			util.InfoLog("r")
 			util.PanicRecovery(r)
 		} else {
 			util.InfoLog("plugin undeployed.")
 		}
 	}()
 
-	util.Init("TLS Plugin",true)
-
 	t,err:=GetTLSSetting()
 	if err!=nil{
 		panic(err)
 	}
 	util.InfoLog(t)
-		
+	
+	
 	_, err= net.ResolveTCPAddr("tcp",t["hostname"].(string)+":"+t["tlsport"].(string))
 	if err != nil {
 		panic(err)
