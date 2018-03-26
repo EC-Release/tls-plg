@@ -28,12 +28,12 @@ import (
 var ()
 
 const (
-	YML_TLS_FLAG = "tls"
+	//YML_TLS_FLAG = "tls"
 	REV = "v1"
 
 )
 
-func GetTLSSetting()(map[string]interface {}, error){
+func GetTLSSetting()(map[string]interface{}, error){
 	
 	plg:=flag.String("plg","","Enable support for EC TLS Plugin.")
 	flag.Parse()
