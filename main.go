@@ -37,7 +37,7 @@ func GetTLSSetting()(map[string]interface{}, error){
 	
 	plg:=flag.String("plg","","Enable support for EC TLS Plugin.")
 	flag.Parse()
-	util.InfoLog(*plg)
+	util.DbgLog(*plg)
 	
 	f, err := base64.StdEncoding.DecodeString(*plg)
 	if err!=nil{
@@ -50,13 +50,12 @@ func GetTLSSetting()(map[string]interface{}, error){
 		return nil,err
 	}
 	
-	//s:=t[""].(map[interface{}]interface{})
 	return t,nil
 
 }
 
 func init(){
-	util.Init("TLS Plugin",true)
+	util.Init("tls",true)
 }
 
 func main(){
@@ -73,8 +72,7 @@ func main(){
 	if err!=nil{
 		panic(err)
 	}
-	util.InfoLog(t)
-	
+	util.DbgLog(t)
 	
 	_, err= net.ResolveTCPAddr("tcp",t["hostname"].(string)+":"+t["tlsport"].(string))
 	if err != nil {
