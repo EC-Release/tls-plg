@@ -25,20 +25,31 @@ import (
 
 )
 
-var ()
+var (
+	REV string = "beta"
+)
 
 const (
 	//YML_TLS_FLAG = "tls"
-	REV = "v1"
+	//REV = "v1"
 
 )
 
 func GetTLSSetting()(map[string]interface{}, error){
 	
 	plg:=flag.String("plg","","Enable support for EC TLS Plugin.")
+	ver:=flag.Bool("ver", false, "Show current tls revision.")
+
 	flag.Parse()
-	util.DbgLog(*plg)
 	
+	if *ver {
+		util.InfoLog("Rev:"+REV)
+		//util.Copyright()
+		os.Exit(0)
+		return nil,nil
+	}
+
+	util.DbgLog(*plg)
 	f, err := base64.StdEncoding.DecodeString(*plg)
 	if err!=nil{
 		return nil, err
