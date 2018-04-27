@@ -13,9 +13,9 @@
 package main
 
 import (
-	//"os"
+	"os"
 	"flag"
-
+	"errors"
 	"net"
 	"net/url"
 	util "github.build.ge.com/212359746/wzutil"
@@ -44,7 +44,6 @@ func GetTLSSetting()(map[string]interface{}, error){
 	
 	if *ver {
 		util.InfoLog("Rev:"+REV)
-		//util.Copyright()
 		os.Exit(0)
 		return nil,nil
 	}
@@ -59,6 +58,10 @@ func GetTLSSetting()(map[string]interface{}, error){
 	err=yaml.Unmarshal(f, &t)
 	if err!=nil{
 		return nil,err
+	}
+
+	if len(t)<1 {
+		return nil, errors.New("invalid file format in plugins.yml")
 	}
 	
 	return t,nil
@@ -80,9 +83,11 @@ func main(){
 	}()
 
 	t,err:=GetTLSSetting()
+	
 	if err!=nil{
 		panic(err)
 	}
+	
 	util.DbgLog(t)
 	
 	_, err= net.ResolveTCPAddr("tcp",t["hostname"].(string)+":"+t["tlsport"].(string))
@@ -91,7 +96,7 @@ func main(){
 	}
 
 	p:=plugin.NewProxy(REV)
-
+	
 	u, err := url.Parse(t["proxy"].(string))
 	if err != nil {
 		panic(err)
