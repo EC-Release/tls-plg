@@ -6,4 +6,4 @@ ec-plugin:
     tlsport: "443"
     proxy: ""
     port: "8995"
-    command: ./tls -v
+    command: ./tls
