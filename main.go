@@ -16,7 +16,7 @@ import (
 	"os"
 	"flag"
 	"errors"
-	"net"
+	//"net"
 	"net/url"
 	util "github.build.ge.com/212359746/wzutil"
 	plugin "github.build.ge.com/212359746/wzplugin"
@@ -48,7 +48,7 @@ func GetTLSSetting()(map[string]interface{}, error){
 		return nil,nil
 	}
 
-	util.DbgLog(*plg)
+	//util.DbgLog(*plg)
 	f, err := base64.StdEncoding.DecodeString(*plg)
 	if err!=nil{
 		return nil, err
@@ -90,10 +90,11 @@ func main(){
 	
 	util.DbgLog(t)
 	
-	_, err= net.ResolveTCPAddr("tcp",t["hostname"].(string)+":"+t["tlsport"].(string))
-	if err != nil {
-		panic(err)
-	}
+	//tcp resolve is irrelevant in this plugin, use http proxy instead
+	//_, err= net.ResolveTCPAddr("tcp",t["hostname"].(string)+":"+t["tlsport"].(string))
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	p:=plugin.NewProxy(REV)
 	
