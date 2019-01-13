@@ -7,7 +7,7 @@
  * with the terms and conditions stipulated in the agreement/contract
  * under which the software has been supplied.
  *
- * author: chia.chang@ge.com
+ * author: apolo.yasuda@ge.com
  */
 
 package main
