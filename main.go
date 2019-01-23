@@ -69,7 +69,6 @@ func GetTLSSetting()(map[string]interface{}, error){
 }
 
 func init(){
-	util.Init("tls",true)
 }
 
 func main(){
@@ -81,6 +80,9 @@ func main(){
 			util.InfoLog("plugin undeployed.")
 		}
 	}()
+
+	util.Branding("/.ec","ec-plugin","ec-config") 
+	util.Init("tls",true)
 
 	t,err:=GetTLSSetting()
 	
