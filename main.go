@@ -81,7 +81,7 @@ func main(){
 		}
 	}()
 
-	util.Branding("/.ec","ec-plugin","ec-config") 
+	util.Branding("/.ec","ec-plugin","ec-config","EC")
 	util.Init("tls",true)
 
 	t,err:=GetTLSSetting()
