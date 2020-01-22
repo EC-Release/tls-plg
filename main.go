@@ -139,7 +139,7 @@ func main(){
 	
 	util.Branding(bc)
 
-	util.Init("tls","0",true)
+	util.Init("tls",true)
 
 	t,err:=GetTLSSetting()
 	
