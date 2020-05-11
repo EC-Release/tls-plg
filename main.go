@@ -18,11 +18,10 @@ import (
 	"errors"
 	//"net"
 	"net/url"
-	util "github.build.ge.com/212359746/wzutil"
-	plugin "github.build.ge.com/212359746/wzplugin"
+	util "github.com/wzlib/wzutil"
+	plugin "github.com/wzlib/wzplugin"
 	"gopkg.in/yaml.v2"
 	"encoding/base64"
-
 )
 
 var (
