@@ -20,6 +20,7 @@ import (
 	"net/url"
 	util "github.com/wzlib/wzutil"
 	plugin "github.com/wzlib/wzplugin"
+	model "github.com/wzlib/wzschema"
 	"gopkg.in/yaml.v2"
 	"encoding/base64"
 )
@@ -117,9 +118,10 @@ func main(){
 		}
 	}()
 
-	bc:=&util.BrandingConfig{
+	bc:=&model.BrandingConfig{
 		CONFIG_MAIN: "/.ec",
-		BRAND_CONFIG: "EC", 
+		BRAND_CONFIG: "EC",
+		ART_NAME: "agent",
 		LOGO: EC_LOGO,
 		COPY_RIGHT: COPY_RIGHT,
 		HEADER_PLUGIN: "ec-plugin",
@@ -135,7 +137,7 @@ func main(){
 		//URL_WATCHER_REPO: WATCHER_CONTR_URL,
 		URL_ISSUE_TRACKER: ISSUE_TRACKER,
 	}
-	
+
 	util.Branding(bc)
 
 	util.Init("tls",true)
