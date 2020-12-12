@@ -18,22 +18,73 @@ import (
 	"errors"
 	//"net"
 	"net/url"
-	util "github.build.ge.com/212359746/wzutil"
-	plugin "github.build.ge.com/212359746/wzplugin"
+	util "github.com/wzlib/wzutil"
+	plugin "github.com/wzlib/wzplugin"
+	model "github.com/wzlib/wzschema"
 	"gopkg.in/yaml.v2"
 	"encoding/base64"
 
 )
 
 var (
-	REV string = "beta"
+	REV string = "v1.2beta"
+	log *util.AppLog
 )
 
 const (
-	//YML_TLS_FLAG = "tls"
-	//REV = "v1"
+	EC_LOGO = `
+           ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄
+          ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+          ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀
+          ▐░▌          ▐░▌   
+          ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌
+          ▐░░░░░░░░░░░▌▐░▌
+          ▐░█▀▀▀▀▀▀▀▀▀ ▐░▌
+          ▐░▌          ▐░▌
+          ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄▄▄ 
+          ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+           ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  @Enterprise-Connect 
+`
+	COPY_RIGHT = "Enterprise-Connect,  @General Electric"
+	ISSUE_TRACKER = "https://github.com/EC-Release/sdk/issues"
 
+	AUTH_HEADER = "Authorization"
+
+	EC_SUB_HEADER  = "Predix-Zone-Id"
+
+	CF_INS_IDX_EV  = "CF_INSTANCE_INDEX"
+	CF_INS_HEADER  = "X-CF-APP-INSTANCE"
+	EC_INS_IDX_EV  = "EC_INSTANCE_INDEX"
+	EC_INS_HEADER  = "X-EC-APP-INSTANCE"
+
+	CA_URL = "https://github.com/EC-Release/certifactory"
 )
+
+
+func init(){
+	bc:=&model.BrandingConfig{
+		CONFIG_MAIN: "/.ec",
+		BRAND_CONFIG: "EC",
+		PASSPHRASE_EXT: "PPS",
+		ART_NAME: "agent",
+		LOGO: EC_LOGO,
+		COPY_RIGHT: COPY_RIGHT,
+		HEADER_PLUGIN: "ec-plugin",
+		HEADER_CONFIG: "ec-config",
+		STREAM_PATH: "/agent",
+		HEADER_AUTH: AUTH_HEADER,
+		HEADER_SUB_ID: EC_SUB_HEADER,
+		HEADER_CF_INST: CF_INS_HEADER,
+		HEADER_INST: EC_INS_HEADER,
+		ENV_CF_INST_IDX: CF_INS_IDX_EV,
+		ENV_INST_IDX: EC_INS_IDX_EV,
+		URL_CA: CA_URL,
+		URL_ISSUE_TRACKER: ISSUE_TRACKER,
+	}
+	
+	util.Branding(bc)
+	log = util.NewAppLog("tls")
+}
 
 func GetTLSSetting()(map[string]interface{}, error){
 	
@@ -43,12 +94,11 @@ func GetTLSSetting()(map[string]interface{}, error){
 	flag.Parse()
 	
 	if *ver {
-		util.InfoLog("Rev:"+REV)
+		log.InfoLog("Rev:"+REV)
 		os.Exit(0)
 		return nil,nil
 	}
 
-	//util.DbgLog(*plg)
 	f, err := base64.StdEncoding.DecodeString(*plg)
 	if err!=nil{
 		return nil, err
@@ -68,22 +118,15 @@ func GetTLSSetting()(map[string]interface{}, error){
 
 }
 
-func init(){
-}
-
 func main(){
 
 	defer func(){
 		if r:=recover();r!=nil{
 			util.PanicRecovery(r)
 		} else {
-			util.InfoLog("plugin undeployed.")
+			log.InfoLog("plugin undeployed.")
 		}
 	}()
-
-	util.Branding("/.ec","ec-plugin","ec-config","TC_HEADER","EC","EC_LOGO","COPY_RIGHT","https://ca-not-in-use.com","EC")
-
-	util.Init("tls","0",true)
 
 	t,err:=GetTLSSetting()
 	
@@ -91,7 +134,7 @@ func main(){
 		panic(err)
 	}
 	
-	util.DbgLog(t)
+	log.DbgLog(t)
 	
 	//tcp resolve is irrelevant in this plugin, use http proxy instead
 	//_, err= net.ResolveTCPAddr("tcp",t["hostname"].(string)+":"+t["tlsport"].(string))
