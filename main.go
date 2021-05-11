@@ -81,7 +81,7 @@ func main(){
 		}
 	}()
 
-	util.Branding("/.ec","ec-plugin","ec-config","TC_HEADER","EC","EC_LOGO","COPY_RIGHT","https://ca-not-in-use.com","EC")
+	util.Branding("/.ec","ec-plugin","ec-config","TC_HEADER","EC","EC_LOGO","COPY_RIGHT","https://ca-not-in-use.com","EC",REV)
 
 	util.Init("tls",true)
 
